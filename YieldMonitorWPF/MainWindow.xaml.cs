@@ -64,6 +64,7 @@ namespace YieldMonitorWPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //testing git
             comboboxComPort.SelectedIndex = 1;
             MonitorTasks();//start timer to monitor task status
             ListSerialPorts(); //pull in comports .. start reading only if com port selected.
