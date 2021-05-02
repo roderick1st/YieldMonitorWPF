@@ -1,0 +1,110 @@
+﻿<Window x:Class="YieldMonitorWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YieldMonitorWPF"
+        mc:Ignorable="d"
+        Title="Yield Monitor" Width="250" Height="600"
+        Loaded="Window_Loaded"> <!--Need this to fire first Function-->
+    <Border Padding="10">
+        <StackPanel>
+            <StackPanel Grid.Column="0" Width="200" Height="590">
+                    <!--Start Button-->
+                    <Button x:Name="buttonStart" Click="buttonStart_Click" Content="Start" FontSize="20" Height="60" FontWeight="ExtraBold"/>
+                    
+                    <!--Connections-->
+                    <TextBlock Text="Connections" FontSize="15" FontWeight="ExtraBold" Margin="0 20 0 5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    
+                    <!--Bluetooth Device-->
+                    <TextBlock x:Name="textblockBluetoothDevice" Text="Bluetooth Device" FontWeight="Bold" Margin="0 0 0 0"/>
+                    <TextBox x:Name="textboxBluetoothDevice" IsReadOnly="True" Background="#eee" Margin="0 0 0 0"/>
+                    
+                    <!--GPS Device-->
+                    <TextBlock Text="GPS Device" FontWeight="Bold" Margin="0 5 0 0"/>
+                    <ComboBox x:Name="comboboxComPort" SelectionChanged="comboboxComPort_SelectionChanged"  SelectedIndex="0"/>
+
+                <!--Field-->
+                    <TextBlock Text="Field" FontWeight="Bold" Margin="0 5 0 0"/>
+                    <ComboBox x:Name="comboboxFields" SelectionChanged="comboboxFields_SelectionChanged"></ComboBox>
+                                           
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <Button x:Name="buttonAddField" Click="buttonAddField_Click" Content="Add"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBox x:Name="textboxAddField" IsReadOnly="False" Background="#eee" Margin="0 0 0 0" Height="20"/>
+                    </StackPanel>
+                </Grid>
+                <!--Status-->
+                <TextBlock Text="Data" FontSize="15" FontWeight="ExtraBold" Margin="0 20 0 5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Left Status Stack-->
+                    <StackPanel Grid.Column="0">
+                        <!--Altitude-->
+                        <TextBlock Text="Altitude" TextAlignment="Center" FontWeight="Bold" Margin="0 0 0 0"/>
+                        <TextBox x:Name="textboxAltitude" TextAlignment="Center" IsReadOnly="True" Background="#eee" Margin="0 0 0 5" />
+                        <!--Latitude-->
+                        <TextBlock Text="Latitude" TextAlignment="Center" FontWeight="Bold" Margin="0 0 0 0"/>
+                        <TextBox x:Name="textboxLatitude" TextAlignment="Center" IsReadOnly="True" Background="#eee" Margin="0 0 0 5" />
+                        <!--Yield-->
+                        <TextBlock Text="Yield" TextAlignment="Center" FontWeight="Bold" Margin="0 0 0 0"/>
+                        <TextBox x:Name="textboxYield" Text="" TextAlignment="Center" IsReadOnly="True" Background="#eee" Margin="0 0 0 5"/>
+                        <!--Time-->
+                        <TextBlock Text="Time" TextAlignment="Center" FontWeight="Bold" Margin="0 0 0 0" />
+                        <TextBox x:Name="textboxTime" TextAlignment="Center" IsReadOnly="True" Background="#eee" Margin="0 0 0 0" />
+                    </StackPanel>
+                    <!--Right Status Stack-->
+                    <StackPanel Grid.Column="1">
+                        <!--Speed-->
+                        <TextBlock x:Name="textBlockSpeed" Text="Speed kph" TextAlignment="Center" FontWeight="Bold" Margin="0 0 0 0"/>
+                        <TextBox x:Name="textboxSpeed" TextAlignment="Center" IsReadOnly="True" Background="#eee" Margin="0 0 0 5"/>
+                        <!--Longitude-->
+                        <TextBlock  Text="Long" TextAlignment="Center" FontWeight="Bold" Margin="0 0 0 0"/>
+                        <TextBox x:Name="textboxLongitude" TextAlignment="Center" IsReadOnly="True" Background="#eee" Margin="0 0 0 5"/>
+                        <!--Paddle-->
+                        <TextBlock Text="Paddle" TextAlignment="Center" FontWeight="Bold" Margin="0 0 0 0"/>
+                        <TextBox x:Name="textboxPaddle" Text="" TextAlignment="Center" IsReadOnly="True" Background="#eee" Margin="0 0 0 5"/>
+                        <!--Date-->
+                        <TextBlock Text="Date" TextAlignment="Center" FontWeight="Bold" Margin="0 0 0 0" />
+                        <TextBox x:Name="textboxDate" TextAlignment="Center" IsReadOnly="True" Background="#eee" Margin="0 0 0 0" />
+                    </StackPanel>
+                </Grid>
+                <TextBlock Text="Task Status" FontSize="15" FontWeight="ExtraBold" Margin="0 20 0 5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Left Status Stack-->
+                    <StackPanel Grid.Column="0">
+                        <!--Altitude-->
+                        <CheckBox x:Name="radiobuttonDateTime" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0 0 0 0">Date Time</CheckBox>
+                        <CheckBox x:Name="radiobuttonBluetoothScan" FontSize="10" HorizontalAlignment="left" VerticalAlignment="Center" Margin="0 0 0 0">BT Scan</CheckBox>
+                    </StackPanel>
+                    <!--Right Status Stack-->
+                    <StackPanel Grid.Column="1">
+                        <CheckBox x:Name="radiobuttonFileWrite" FontSize="10" HorizontalAlignment="left" VerticalAlignment="Center" Margin="5 0 0 0">File Write</CheckBox>
+                        <CheckBox x:Name="radiobuttonBluetoothRead" FontSize="10" HorizontalAlignment="left" VerticalAlignment="Center" Margin="5 0 0 0">BT Read</CheckBox>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <CheckBox x:Name="radiobuttonSerial" FontSize="10" HorizontalAlignment="left" VerticalAlignment="Center" Margin="5 0 0 0">Ser/UDP</CheckBox>
+                    </StackPanel>
+                </Grid>
+
+                <!--Task Status-->
+               
+            </StackPanel>
+  
+        </StackPanel>
+    </Border>
+</Window>
