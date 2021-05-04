@@ -30,8 +30,8 @@ namespace YieldMonitorWPF
 
             while (true)
             {
-                //try
-                //{
+                try
+                {
                     numBytes = myStream.Read(mBuffer, 0, 1024);
                     if (numBytes > 0)
                     {
@@ -48,11 +48,11 @@ namespace YieldMonitorWPF
                         Thread.Sleep(100); //more time to collect data?
                     }
 
-                //}
-                //catch
-                //{
+                }
+                catch
+                {
 
-                //}
+                }
             }
 
         }
