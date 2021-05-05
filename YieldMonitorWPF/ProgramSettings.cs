@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace YieldMonitorWPF
 {
-    class ProgramClosed
+    class ProgramSettings
     {
         //the program has closed so lets store last settings in LastSettings.mxl
         public void SaveSettings(string filePath, string fieldName, int fieldComboBoxIndex, int GPSComboIndex)

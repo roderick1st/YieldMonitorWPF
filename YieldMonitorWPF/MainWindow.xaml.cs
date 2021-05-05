@@ -85,9 +85,13 @@ namespace YieldMonitorWPF
         private void Window_Closed(object sender, EventArgs e)
         {
             //save current state to xml
-            ProgramClosed programClosed = new ProgramClosed();
+            ProgramSettings programSettings = new ProgramSettings();
             //save field name, combobox index and gps combobox index
-            programClosed.SaveSettings(dataPath, comboboxFields.SelectedItem.ToString(), comboboxFields.SelectedIndex, comboboxComPort.SelectedIndex);
+            if(comboboxFields.SelectedItem != null)
+            {
+                programSettings.SaveSettings(dataPath, comboboxFields.SelectedItem.ToString(), comboboxFields.SelectedIndex, comboboxComPort.SelectedIndex);
+            }
+            
         }
 
         private void buttonStart_Click(object sender, RoutedEventArgs e)
@@ -125,6 +129,8 @@ namespace YieldMonitorWPF
         {
             AddRemoveField addRemoveField = new AddRemoveField(); //add field class
             addRemoveField.addField(xmlFieldFile, textboxAddField.Text, textboxLatitude.Text, textboxLongitude.Text, textboxDate.Text, textboxTime.Text);
+            //clear the textbox
+            textboxAddField.Text = "";
             GetFieldsFromXML(-1); //reload the combobox with new xml data            
         }
 
@@ -153,7 +159,7 @@ namespace YieldMonitorWPF
             {
                 try
                 {
-                    ProgramClosed programStarted = new ProgramClosed();
+                    ProgramSettings programStarted = new ProgramSettings();
                     comboboxFields.SelectedItem = programStarted.LoadSettings(dataPath, "LastSettings.xml");
                 } catch //incase the field does not exist anymore
                 {
