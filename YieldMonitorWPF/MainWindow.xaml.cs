@@ -36,6 +36,7 @@ namespace YieldMonitorWPF
         Task glob_BluetoothReadTask = null;
         Task glob_BluetoothScanTask = null;
         Task glob_SaveDataToFile = null;
+        Task glob_UDPPortTask = null;
 
         int glob_GPSPort = 7999; //port used to recieve GPS from F9P
 
@@ -188,10 +189,18 @@ namespace YieldMonitorWPF
             if (comboboxComPort.SelectedIndex == 1) //we have a UDP source
             {
                 //comboboxComPort.SelectedItem = "UDP Port : " + glob_GPSPort.ToString(); //tell the user which port we are trying to connect to
-                UDPPortConnection myUDPPortConnection = new UDPPortConnection();
-                myUDPPortConnection.UDPPortEvent += UDPPortTaskActive;
-                glob_serialPortTask = Task.Factory.StartNew(() => myUDPPortConnection.ReadFromUDPPort(glob_GPSPort), TaskCreationOptions.LongRunning);
+                //UDPPortConnection myUDPPortConnection = new UDPPortConnection();
+                //myUDPPortConnection.UDPPortEvent += UDPPortTaskActive;
+                //glob_UDPPortTask = Task.Factory.StartNew(() => myUDPPortConnection.ReadFromUDPPort(glob_GPSPort), TaskCreationOptions.LongRunning);
+                ConnectUDP();
             }
+        }
+
+        private void ConnectUDP()
+        {
+            UDPPortConnection myUDPPortConnection = new UDPPortConnection();
+            myUDPPortConnection.UDPPortEvent += UDPPortTaskActive;
+            glob_UDPPortTask = Task.Factory.StartNew(() => myUDPPortConnection.ReadFromUDPPort(glob_GPSPort), TaskCreationOptions.LongRunning);
         }
 
         //GET SERIAL PORTS FOR GPS_____________________________________________________________________________________
@@ -623,6 +632,11 @@ namespace YieldMonitorWPF
             else { radiobuttonSerial.IsChecked = false; }
 
             if (glob_SaveDataToFile == null) { radiobuttonFileWrite.IsChecked = false; }
+
+            if ((glob_UDPPortTask.ToString() != "Running") & (comboboxComPort.SelectedIndex == 1))//we are trying to use UDP but its not running
+                {
+                    ConnectUDP();
+                }
 
             }), DispatcherPriority.Background);
             
