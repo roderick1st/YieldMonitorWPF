@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace YieldMonitorWPF
 {
@@ -38,6 +39,16 @@ namespace YieldMonitorWPF
                 fs.Write(xmlNodeSettingsEnd, 0, xmlNodeSettingsEnd.Length);
                 fs.Close();
             }
+        }
+
+        public string LoadSettings(string filePath, string fileName)
+        {
+            string fullFilePath = filePath + "//" + fileName;           
+            XmlDocument doc = new XmlDocument();
+            doc.Load(fullFilePath);
+            XmlNode node = doc.DocumentElement.SelectSingleNode("/Settings/Field");
+            string fieldLastUsed = node.InnerText;
+            return fieldLastUsed;
         }
 
     }

@@ -23,9 +23,9 @@ namespace YieldMonitorWPF
             {
                 //have we found the device we are looking for?
                 if (d.DeviceName == "DSD TECH HC-05")
-                {
+                {                    
+                    Pair(d.DeviceAddress);//try to pair the device
                     SendBluetoothEvent(1, d.DeviceName, d.DeviceAddress, false);//Scan notification = 1
-                    Pair(d.DeviceAddress);
                     break;
                 }
             }

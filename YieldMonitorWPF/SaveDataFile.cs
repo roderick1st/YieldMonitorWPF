@@ -32,6 +32,12 @@ namespace YieldMonitorWPF
             else
             {
                 Debug.WriteLine("File not there");
+                //check the directory exists
+                if(!Directory.Exists(saveDirectory + "\\FieldData"))
+                {
+                    //directory does not exist
+                    Directory.CreateDirectory(saveDirectory + "\\FieldData");
+                }
                 using (FileStream fs = File.Create(filePath))
                 {
                     byte[] xmlHeader = new UTF8Encoding(true).GetBytes("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");

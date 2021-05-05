@@ -55,11 +55,31 @@ namespace YieldMonitorWPF
             {
                 dc.ColumnMapping = MappingType.Attribute;
             }
+            if (!File.Exists(filePath)) //create the file as its not there
+            {
+                using (FileStream fs = File.Create(filePath))
+                {
+                    byte[] xmlHeader = new UTF8Encoding(true).GetBytes("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+                    fs.Write(xmlHeader, 0, xmlHeader.Length);
+                    byte[] xmlNodeStart = new UTF8Encoding(true).GetBytes("<Fields>\n");
+                    fs.Write(xmlNodeStart, 0, xmlNodeStart.Length);
+                    byte[] xmlNodeContent = new UTF8Encoding(true).GetBytes(
+                        "\t<Field>" +
+                        "\t\t<name>NO FIELD</name>\n" +
+                        "\t\t<date>00/00/0000</date>\n" +
+                        "\t\t<time>00:00:00</time>\n" +
+                        "\t</Field>");
+                    fs.Write(xmlNodeContent, 0, xmlNodeContent.Length);
+                    byte[] xmlNodeEnd = new UTF8Encoding(true).GetBytes("</Fields>");
+                    fs.Write(xmlNodeEnd, 0, xmlNodeEnd.Length);
+                    fs.Close();                   
+                }
+            }
             FileStream myFileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             StreamReader myXmlStream = new StreamReader(myFileStream);
             ds.ReadXml(myXmlStream);
             myFileStream.Close();
-            return (ds);
+            return (ds);//return the data set
         }
     }
 }

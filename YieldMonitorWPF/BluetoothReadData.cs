@@ -1,6 +1,7 @@
 ﻿using InTheHand.Net.Sockets;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace YieldMonitorWPF
     class BluetoothReadData
     {
         Guid myGuid = Guid.Parse("00001101-0000-1000-8000-00805F9B34FB");
+        //Guid myGuid = Guid.Parse("E2965DC6-3D34-4E56-A0D0-B00255B0D233");
 
         public event BluetoothDataRecievedHandler BluetoothDataRecievedEvent;
 
@@ -19,35 +21,50 @@ namespace YieldMonitorWPF
         {
             // Connect to device
             BluetoothClient bluetoothClient = new BluetoothClient();
-            bluetoothClient.Connect(deviceAddress, myGuid);
-            Stream myStream = bluetoothClient.GetStream();//get the stream from the device
-
-            byte[] mBuffer = new byte[1024];
-            int numBytes; //bytes returned
-            string sDeviceData;
-            string sIncompletReturnedData = "";
-            string sAllData;
-
-            while (true)
+            bool btConnectionSuccessfull = false;
+            try
             {
+                bluetoothClient.Connect(deviceAddress, myGuid);
+                btConnectionSuccessfull = true;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("BT Connection Error : " + e);
+                btConnectionSuccessfull = false;
+            }
+
+            if (btConnectionSuccessfull)
+            {
+
+
+                Stream myStream = bluetoothClient.GetStream();//get the stream from the device
+
+                byte[] mBuffer = new byte[1024];
+                int numBytes; //bytes returned
+                string sDeviceData;
+                string sIncompletReturnedData = "";
+                string sAllData;
+
                 try
                 {
-                    numBytes = myStream.Read(mBuffer, 0, 1024);
-                    if (numBytes > 0)
+                    while (true)
                     {
-                        sDeviceData = Encoding.ASCII.GetString(mBuffer, 0, numBytes);
-                        sAllData = sIncompletReturnedData + sDeviceData;
-                        //Debug.WriteLine("Returned Data: " + sIncompletReturnedData);
-                        sIncompletReturnedData = "";
-                        sDeviceData = "";
+                        numBytes = myStream.Read(mBuffer, 0, 1024);
+                        if (numBytes > 0)
+                        {
+                            sDeviceData = Encoding.ASCII.GetString(mBuffer, 0, numBytes);
+                            sAllData = sIncompletReturnedData + sDeviceData;
+                            //Debug.WriteLine("Returned Data: " + sIncompletReturnedData);
+                            sIncompletReturnedData = "";
+                            sDeviceData = "";
 
-                        //lets get this data sorted out
-                        //pass it to a new procedure to keep things tidy the proc will return any incomplete string to be added to the next stream
-                        sIncompletReturnedData = SortTheStreamOut(sAllData);
-                        sAllData = "";
-                        Thread.Sleep(100); //more time to collect data?
+                            //lets get this data sorted out
+                            //pass it to a new procedure to keep things tidy the proc will return any incomplete string to be added to the next stream
+                            sIncompletReturnedData = SortTheStreamOut(sAllData);
+                            sAllData = "";
+                            Thread.Sleep(100); //more time to collect data?
+                        }
                     }
-
                 }
                 catch
                 {

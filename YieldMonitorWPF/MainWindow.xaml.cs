@@ -42,7 +42,8 @@ namespace YieldMonitorWPF
         bool glob_RecordField = false;
         bool glob_StopRecording = false;
 
-        static string dataPath = "E:/c_Sharp_Solutions/YieldMonitorWPF/YieldMonitorWPF/";
+        //static string dataPath = "E:/c_Sharp_Solutions/YieldMonitorWPF/YieldMonitorWPF/";
+        static string dataPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\YieldMonitor\\";
         static string xmlFieldFile = dataPath + "Fields.xml";
 
 
@@ -52,10 +53,6 @@ namespace YieldMonitorWPF
 
         GPSData currentGPSData = new GPSData();//place to store GPS data
 
-        //int glob_RecordCount = 0;
-
-        //static List<string> glob_AccumalatedDataList;
-
         public MainWindow()
         {
             InitializeComponent(); 
@@ -64,18 +61,27 @@ namespace YieldMonitorWPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            comboboxComPort.SelectedIndex = 1;
+            CheckFileStructure();//check that the file structure is in place and build it if not
             MonitorTasks();//start timer to monitor task status
             ListSerialPorts(); //pull in comports .. start reading only if com port selected.
             buttonStart.IsEnabled = false;// dont lets us click untill we have a device
             buttonStart.Content = "Connect";
             StartCollectingDateAndTime(); //Lets collect the time  
             ScanForBluetooth(); // this will wait to complete...
-            GetFieldsFromXML(1); //populate the fields combo box
-            string myPath = Directory.GetCurrentDirectory();
-            Debug.WriteLine(myPath);
+            GetFieldsFromXML(-2); //populate the fields combo box
+            
+            comboboxComPort.SelectedIndex = 1;
         }
 
+        private void CheckFileStructure()
+        {
+            //Does the folder YieldMonitor exist in the users MyDocuments folder
+            if (!Directory.Exists(dataPath))
+            {
+                //create the directory
+                Directory.CreateDirectory(dataPath);
+            }
+        }
         private void Window_Closed(object sender, EventArgs e)
         {
             //save current state to xml
@@ -91,15 +97,13 @@ namespace YieldMonitorWPF
             {
                 buttonStart.Content = "Recording...";
                 glob_RecordField = true;//start saving the field data to a file
-            } else if (buttonStart.Content.ToString() == "Recording...")
+            }
+            else if (buttonStart.Content.ToString() == "Recording...")
             {
                 buttonStart.Content = "Start Recording";
                 glob_RecordField = false;
                 glob_StopRecording = true; //we need to save our collected data befor stopping the recordning
-            }
-
-            
-                
+            }              
         }
 
         private void ConnectToBlueTooth()
@@ -145,7 +149,18 @@ namespace YieldMonitorWPF
             if(itemSelected == -1) //we want the last element loaded
             {                
                 comboboxFields.SelectedIndex = comboboxFields.Items.Count - 1; //select the last item
-            } else
+            } else if (itemSelected == -2) //we want the last field used before the program was closed
+            {
+                try
+                {
+                    ProgramClosed programStarted = new ProgramClosed();
+                    comboboxFields.SelectedItem = programStarted.LoadSettings(dataPath, "LastSettings.xml");
+                } catch //incase the field does not exist anymore
+                {
+                    comboboxFields.SelectedIndex = 0;
+                }
+            }           
+            else
             {
               comboboxFields.SelectedIndex = itemSelected; //load the first item
             }
@@ -196,13 +211,7 @@ namespace YieldMonitorWPF
         //GET SERIAL PORTS FOR GPS END_________________________________________________________________________________
 
         //GPS DATA_________________________________________________________________________________________________________
-  /// <summary>
-  /// 
-  /// </summary>
-  /// <param name="myNMEAType"></param>
-  /// <param name="currentLatitudeOrLongitude"></param>
-  /// <param name="northSouthEastWest"></param>
-  /// <returns></returns>
+  
         private float CalculateLatitudeLongitude(string myNMEAType, string currentLatitudeOrLongitude, string northSouthEastWest)
         {
             //(d)dd + (mm.mmmm / 60)(*-1 for W and S)
